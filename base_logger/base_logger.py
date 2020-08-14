@@ -42,22 +42,19 @@ def log_method(func, prefix="", log_limit: int = None):
 
     @wraps(func)
     def with_logging(*args, **kwargs):
-        if callable(func):
-            print(f"{prefix}{func.__name__}")
-            arg_keys = []
-            for i, arg in enumerate(args):  # record all args
-                if not str(arg).startswith("<"):  # skip logging object references
-                    arg_keys.append(list(signature(func).parameters.keys())[i])
-                    print(f"\t{arg_keys[-1]}: {str(arg)[:log_limit]}")
-            for k, v in kwargs.items():  # record all kwargs
-                print(f"\t{k}: {str(v)[:log_limit]}")
-            for k, kv in signature(func).parameters.items():  # record accepted default kwargs
-                if k not in kwargs.keys() and k not in arg_keys and "=" in str(kv):
-                    print(f"\t{k}: {str(kv).split('=')[1].strip()[:log_limit]}")
-            result = func(*args, **kwargs)
-        else:  # log @properties
-            print(f"{prefix}{func.fget.__name__}")
-            result = func
+        print(f"{prefix}{func.__name__}")
+        arg_keys = []
+        for i, arg in enumerate(args):  # record all args
+            if str(arg).startswith("<"):  # skip logging object references
+                continue
+            arg_keys.append(list(signature(func).parameters.keys())[i])
+            print(f"\t{arg_keys[-1]}: {str(arg)[:log_limit]}")
+        for k, v in kwargs.items():  # record all kwargs
+            print(f"\t{k}: {str(v)[:log_limit]}")
+        for k, kv in signature(func).parameters.items():  # record accepted default kwargs
+            if k not in kwargs.keys() and k not in arg_keys and "=" in str(kv):
+                print(f"\t{k}: {str(kv).split('=')[1].strip()[:log_limit]}")
+        result = func(*args, **kwargs)
 
         if result is not None:
             print(f"\tReturning: {str(result)[:log_limit]}")
