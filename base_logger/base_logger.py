@@ -46,9 +46,10 @@ def log_method(func, prefix="", log_limit: int = None):
             print(f"{prefix}{func.__name__}")
             arg_keys = []
             for i, arg in enumerate(args):  # record all args
-                if not str(arg).startswith("<"):  # skip logging object references
-                    arg_keys.append(list(signature(func).parameters.keys())[i])
-                    print(f"\t{arg_keys[-1]}: {str(arg)[:log_limit]}")
+                if str(arg).startswith("<"):  # skip logging object references
+                    continue
+                arg_keys.append(list(signature(func).parameters.keys())[i])
+                print(f"\t{arg_keys[-1]}: {str(arg)[:log_limit]}")
             for k, v in kwargs.items():  # record all kwargs
                 print(f"\t{k}: {str(v)[:log_limit]}")
             for k, kv in signature(func).parameters.items():  # record accepted default kwargs
