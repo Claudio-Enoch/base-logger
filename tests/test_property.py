@@ -1,4 +1,4 @@
-from base_logger import BaseLogger, log_method
+from base_logger import log_method
 
 
 def test_property(capfd, obj):
